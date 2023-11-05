@@ -1,72 +1,74 @@
 /**
  * @file
- * Implements Interval meta strategy.
+ * Implements Odd Period meta strategy.
  */
 
 // Prevents processing this includes file multiple times.
-#ifndef STG_META_INTERVAL_MQH
-#define STG_META_INTERVAL_MQH
+#ifndef STG_META_ODD_PERIOD_MQH
+#define STG_META_ODD_PERIOD_MQH
 
 // User input params.
-INPUT2_GROUP("Meta Interval strategy: main params");
-INPUT2 ENUM_STRATEGY Meta_Interval_Strategy_Main = STRAT_BANDS;      // Main strategy
-INPUT2 ENUM_STRATEGY Meta_Interval_Strategy_Interval = STRAT_GATOR;  // Interval strategy
-INPUT2 ushort Meta_Interval_Strategy_MinutesEach = 15;               // Interval per minute
-INPUT2 ushort Meta_Interval_Strategy_MinutesAfter = 2;               // Minutes after interval
-INPUT2 ushort Meta_Interval_Strategy_MinutesBefore = 2;              // Minutes before interval
-INPUT3_GROUP("Meta Interval strategy: common params");
-INPUT3 float Meta_Interval_LotSize = 0;                // Lot size
-INPUT3 int Meta_Interval_SignalOpenMethod = 0;         // Signal open method
-INPUT3 float Meta_Interval_SignalOpenLevel = 0;        // Signal open level
-INPUT3 int Meta_Interval_SignalOpenFilterMethod = 32;  // Signal open filter method
-INPUT3 int Meta_Interval_SignalOpenFilterTime = 3;     // Signal open filter time (0-31)
-INPUT3 int Meta_Interval_SignalOpenBoostMethod = 0;    // Signal open boost method
-INPUT3 int Meta_Interval_SignalCloseMethod = 0;        // Signal close method
-INPUT3 int Meta_Interval_SignalCloseFilter = 32;       // Signal close filter (-127-127)
-INPUT3 float Meta_Interval_SignalCloseLevel = 0;       // Signal close level
-INPUT3 int Meta_Interval_PriceStopMethod = 1;          // Price limit method
-INPUT3 float Meta_Interval_PriceStopLevel = 2;         // Price limit level
-INPUT3 int Meta_Interval_TickFilterMethod = 1;         // Tick filter method (0-255)
-INPUT3 float Meta_Interval_MaxSpread = 4.0;            // Max spread to trade (in pips)
-INPUT3 short Meta_Interval_Shift = 0;                  // Shift
-INPUT3 float Meta_Interval_OrderCloseLoss = 200;       // Order close loss
-INPUT3 float Meta_Interval_OrderCloseProfit = 200;     // Order close profit
-INPUT3 int Meta_Interval_OrderCloseTime = 1440;        // Order close time in mins (>0) or bars (<0)
+INPUT2_GROUP("Meta Odd Period strategy: main params");
+INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Even = STRAT_BANDS;  // Strategy for even periods
+INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Odd = STRAT_GATOR;   // Strategy for odd periods
+INPUT2 ENUM_TIMEFRAMES Meta_Odd_Period_Timeframe = PERIOD_H1;      // Timeframe for even/odd periods
+INPUT2 ushort Meta_Odd_Period_Strategy_MinutesEach = 15;           // Odd_Period per minute
+INPUT2 ushort Meta_Odd_Period_Strategy_MinutesAfter = 2;           // Minutes after interval
+INPUT2 ushort Meta_Odd_Period_Strategy_MinutesBefore = 2;          // Minutes before interval
+INPUT3_GROUP("Meta Odd Period strategy: common params");
+INPUT3 float Meta_Odd_Period_LotSize = 0;                // Lot size
+INPUT3 int Meta_Odd_Period_SignalOpenMethod = 0;         // Signal open method
+INPUT3 float Meta_Odd_Period_SignalOpenLevel = 0;        // Signal open level
+INPUT3 int Meta_Odd_Period_SignalOpenFilterMethod = 32;  // Signal open filter method
+INPUT3 int Meta_Odd_Period_SignalOpenFilterTime = 3;     // Signal open filter time (0-31)
+INPUT3 int Meta_Odd_Period_SignalOpenBoostMethod = 0;    // Signal open boost method
+INPUT3 int Meta_Odd_Period_SignalCloseMethod = 0;        // Signal close method
+INPUT3 int Meta_Odd_Period_SignalCloseFilter = 32;       // Signal close filter (-127-127)
+INPUT3 float Meta_Odd_Period_SignalCloseLevel = 0;       // Signal close level
+INPUT3 int Meta_Odd_Period_PriceStopMethod = 1;          // Price limit method
+INPUT3 float Meta_Odd_Period_PriceStopLevel = 2;         // Price limit level
+INPUT3 int Meta_Odd_Period_TickFilterMethod = 1;         // Tick filter method (0-255)
+INPUT3 float Meta_Odd_Period_MaxSpread = 4.0;            // Max spread to trade (in pips)
+INPUT3 short Meta_Odd_Period_Shift = 0;                  // Shift
+INPUT3 float Meta_Odd_Period_OrderCloseLoss = 200;       // Order close loss
+INPUT3 float Meta_Odd_Period_OrderCloseProfit = 200;     // Order close profit
+INPUT3 int Meta_Odd_Period_OrderCloseTime = 1440;        // Order close time in mins (>0) or bars (<0)
 
 // Structs.
 
 // Defines struct with default user strategy values.
-struct Stg_Meta_Interval_Params_Defaults : StgParams {
-  Stg_Meta_Interval_Params_Defaults()
-      : StgParams(::Meta_Interval_SignalOpenMethod, ::Meta_Interval_SignalOpenFilterMethod,
-                  ::Meta_Interval_SignalOpenLevel, ::Meta_Interval_SignalOpenBoostMethod,
-                  ::Meta_Interval_SignalCloseMethod, ::Meta_Interval_SignalCloseFilter,
-                  ::Meta_Interval_SignalCloseLevel, ::Meta_Interval_PriceStopMethod, ::Meta_Interval_PriceStopLevel,
-                  ::Meta_Interval_TickFilterMethod, ::Meta_Interval_MaxSpread, ::Meta_Interval_Shift) {
-    Set(STRAT_PARAM_LS, ::Meta_Interval_LotSize);
-    Set(STRAT_PARAM_OCL, ::Meta_Interval_OrderCloseLoss);
-    Set(STRAT_PARAM_OCP, ::Meta_Interval_OrderCloseProfit);
-    Set(STRAT_PARAM_OCT, ::Meta_Interval_OrderCloseTime);
-    Set(STRAT_PARAM_SOFT, ::Meta_Interval_SignalOpenFilterTime);
+struct Stg_Meta_Odd_Period_Params_Defaults : StgParams {
+  Stg_Meta_Odd_Period_Params_Defaults()
+      : StgParams(::Meta_Odd_Period_SignalOpenMethod, ::Meta_Odd_Period_SignalOpenFilterMethod,
+                  ::Meta_Odd_Period_SignalOpenLevel, ::Meta_Odd_Period_SignalOpenBoostMethod,
+                  ::Meta_Odd_Period_SignalCloseMethod, ::Meta_Odd_Period_SignalCloseFilter,
+                  ::Meta_Odd_Period_SignalCloseLevel, ::Meta_Odd_Period_PriceStopMethod,
+                  ::Meta_Odd_Period_PriceStopLevel, ::Meta_Odd_Period_TickFilterMethod, ::Meta_Odd_Period_MaxSpread,
+                  ::Meta_Odd_Period_Shift) {
+    Set(STRAT_PARAM_LS, ::Meta_Odd_Period_LotSize);
+    Set(STRAT_PARAM_OCL, ::Meta_Odd_Period_OrderCloseLoss);
+    Set(STRAT_PARAM_OCP, ::Meta_Odd_Period_OrderCloseProfit);
+    Set(STRAT_PARAM_OCT, ::Meta_Odd_Period_OrderCloseTime);
+    Set(STRAT_PARAM_SOFT, ::Meta_Odd_Period_SignalOpenFilterTime);
   }
 };
 
-class Stg_Meta_Interval : public Strategy {
+class Stg_Meta_Odd_Period : public Strategy {
  protected:
   DictStruct<long, Ref<Strategy>> strats;
 
  public:
-  Stg_Meta_Interval(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
+  Stg_Meta_Odd_Period(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
       : Strategy(_sparams, _tparams, _cparams, _name) {}
 
-  static Stg_Meta_Interval *Init(ENUM_TIMEFRAMES _tf = NULL, EA *_ea = NULL) {
+  static Stg_Meta_Odd_Period *Init(ENUM_TIMEFRAMES _tf = NULL, EA *_ea = NULL) {
     // Initialize strategy initial values.
-    Stg_Meta_Interval_Params_Defaults stg_meta_interval_defaults;
-    StgParams _stg_params(stg_meta_interval_defaults);
+    Stg_Meta_Odd_Period_Params_Defaults stg_meta_odd_period_defaults;
+    StgParams _stg_params(stg_meta_odd_period_defaults);
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams;
-    Strategy *_strat = new Stg_Meta_Interval(_stg_params, _tparams, _cparams, "(Meta) Time");
+    Strategy *_strat = new Stg_Meta_Odd_Period(_stg_params, _tparams, _cparams, "(Meta) Time");
     return _strat;
   }
 
@@ -74,8 +76,8 @@ class Stg_Meta_Interval : public Strategy {
    * Event on strategy's init.
    */
   void OnInit() {
-    StrategyAdd(Meta_Interval_Strategy_Main, 0);
-    StrategyAdd(Meta_Interval_Strategy_Interval, 1);
+    StrategyAdd(Meta_Odd_Period_Strategy_Even, 0);
+    StrategyAdd(Meta_Odd_Period_Strategy_Odd, 1);
   }
 
   /**
@@ -106,12 +108,12 @@ class Stg_Meta_Interval : public Strategy {
   /**
    * Gets price stop value.
    */
-  Ref<Strategy> GetStrategyPerInterval() {
+  Ref<Strategy> GetStrategyPerOdd_Period() {
     datetime _timestamp = TimeCurrent();
     Ref<Strategy> _strat_ref = strats.GetByKey(0);
-    int _reminder = int(_timestamp % (::Meta_Interval_Strategy_MinutesEach * 60));
-    if ((_reminder / 60) >= (::Meta_Interval_Strategy_MinutesEach - ::Meta_Interval_Strategy_MinutesBefore) &&
-        (_reminder / 60) <= (::Meta_Interval_Strategy_MinutesEach + ::Meta_Interval_Strategy_MinutesAfter)) {
+    int _reminder = int(_timestamp % (::Meta_Odd_Period_Strategy_MinutesEach * 60));
+    if ((_reminder / 60) >= (::Meta_Odd_Period_Strategy_MinutesEach - ::Meta_Odd_Period_Strategy_MinutesBefore) &&
+        (_reminder / 60) <= (::Meta_Odd_Period_Strategy_MinutesEach + ::Meta_Odd_Period_Strategy_MinutesAfter)) {
       _strat_ref = strats.GetByKey(1);
     }
     return _strat_ref;
@@ -127,7 +129,7 @@ class Stg_Meta_Interval : public Strategy {
       // Ignores calculation when method is 0.
       return (float)_result;
     }
-    Ref<Strategy> _strat_ref = GetStrategyPerInterval();
+    Ref<Strategy> _strat_ref = GetStrategyPerOdd_Period();
     if (!_strat_ref.IsSet()) {
       // Returns false when strategy is not set.
       return false;
@@ -144,7 +146,7 @@ class Stg_Meta_Interval : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method, float _level = 0.0f, int _shift = 0) {
     bool _result = true;  // strats.Size() > 0;
-    Ref<Strategy> _strat_ref = GetStrategyPerInterval();
+    Ref<Strategy> _strat_ref = GetStrategyPerOdd_Period();
     if (!_strat_ref.IsSet()) {
       // Returns false when strategy is not set.
       return false;
@@ -165,4 +167,4 @@ class Stg_Meta_Interval : public Strategy {
   }
 };
 
-#endif  // STG_META_INTERVAL_MQH
+#endif  // STG_META_ODD_PERIOD_MQH

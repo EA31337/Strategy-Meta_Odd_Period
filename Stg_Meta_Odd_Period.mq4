@@ -6,7 +6,7 @@
 
 /**
  * @file
- * Implements Interval meta strategy.
+ * Implements Odd Period meta strategy.
  */
 
 // Includes the main code.
