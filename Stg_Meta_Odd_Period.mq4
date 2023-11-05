@@ -10,4 +10,4 @@
  */
 
 // Includes the main code.
-#include "Stg_Meta_Interval.mq5"
+#include "Stg_Meta_Odd_Period.mq5"
