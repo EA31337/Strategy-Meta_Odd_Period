@@ -10,7 +10,7 @@
 // User input params.
 INPUT2_GROUP("Meta Odd Period strategy: main params");
 INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Even = STRAT_OSCILLATOR_MULTI;  // Strategy for even periods
-INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Odd = STRAT_OSCILLATOR_MULTI;   // Strategy for odd periods
+INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Odd = STRAT_RSI;                // Strategy for odd periods
 INPUT2 ENUM_TIMEFRAMES Meta_Odd_Period_Timeframe = PERIOD_H1;                 // Timeframe for even/odd periods
 INPUT3_GROUP("Meta Odd Period strategy: common params");
 INPUT3 float Meta_Odd_Period_LotSize = 0;                // Lot size
