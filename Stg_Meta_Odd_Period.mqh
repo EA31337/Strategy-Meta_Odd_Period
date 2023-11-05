@@ -12,9 +12,6 @@ INPUT2_GROUP("Meta Odd Period strategy: main params");
 INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Even = STRAT_BANDS;  // Strategy for even periods
 INPUT2 ENUM_STRATEGY Meta_Odd_Period_Strategy_Odd = STRAT_GATOR;   // Strategy for odd periods
 INPUT2 ENUM_TIMEFRAMES Meta_Odd_Period_Timeframe = PERIOD_H1;      // Timeframe for even/odd periods
-INPUT2 ushort Meta_Odd_Period_Strategy_MinutesEach = 15;           // Odd_Period per minute
-INPUT2 ushort Meta_Odd_Period_Strategy_MinutesAfter = 2;           // Minutes after interval
-INPUT2 ushort Meta_Odd_Period_Strategy_MinutesBefore = 2;          // Minutes before interval
 INPUT3_GROUP("Meta Odd Period strategy: common params");
 INPUT3 float Meta_Odd_Period_LotSize = 0;                // Lot size
 INPUT3 int Meta_Odd_Period_SignalOpenMethod = 0;         // Signal open method
@@ -108,14 +105,11 @@ class Stg_Meta_Odd_Period : public Strategy {
   /**
    * Gets price stop value.
    */
-  Ref<Strategy> GetStrategyPerOdd_Period() {
-    datetime _timestamp = TimeCurrent();
-    Ref<Strategy> _strat_ref = strats.GetByKey(0);
-    int _reminder = int(_timestamp % (::Meta_Odd_Period_Strategy_MinutesEach * 60));
-    if ((_reminder / 60) >= (::Meta_Odd_Period_Strategy_MinutesEach - ::Meta_Odd_Period_Strategy_MinutesBefore) &&
-        (_reminder / 60) <= (::Meta_Odd_Period_Strategy_MinutesEach + ::Meta_Odd_Period_Strategy_MinutesAfter)) {
-      _strat_ref = strats.GetByKey(1);
-    }
+  Ref<Strategy> GetStrategy() {
+    datetime _ts = TimeCurrent();
+    ulong _tf_secs = ChartTf::TfToSeconds(::Meta_Odd_Period_Timeframe);  // @todo: Move param to getters/setters.
+    bool _is_even = ((_ts / _tf_secs) % 2) == 0;
+    Ref<Strategy> _strat_ref = strats.GetByKey(_is_even ? 0 : 1);
     return _strat_ref;
   }
 
@@ -129,7 +123,7 @@ class Stg_Meta_Odd_Period : public Strategy {
       // Ignores calculation when method is 0.
       return (float)_result;
     }
-    Ref<Strategy> _strat_ref = GetStrategyPerOdd_Period();
+    Ref<Strategy> _strat_ref = GetStrategy();
     if (!_strat_ref.IsSet()) {
       // Returns false when strategy is not set.
       return false;
@@ -146,7 +140,7 @@ class Stg_Meta_Odd_Period : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method, float _level = 0.0f, int _shift = 0) {
     bool _result = true;  // strats.Size() > 0;
-    Ref<Strategy> _strat_ref = GetStrategyPerOdd_Period();
+    Ref<Strategy> _strat_ref = GetStrategy();
     if (!_strat_ref.IsSet()) {
       // Returns false when strategy is not set.
       return false;

@@ -7,7 +7,8 @@
 [![License][license-image]][license-link]
 [![Edit][gh-edit-badge]][gh-edit-link]
 
-Meta Odd Period strategy to trade with different strategies between even and odd periods.
+Meta Odd Period strategy to trade
+with different strategies between even and odd periods.
 
 ## Dependencies
 
